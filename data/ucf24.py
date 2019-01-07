@@ -73,6 +73,8 @@ def make_lists(rootpath, imgtype, split=1, fulltest=False):
     trainlist = []
     testlist = []
 
+    print_video_step = 250
+
     with open(rootpath + 'splitfiles/pyannot.pkl','rb') as fff:
         database = pickle.load(fff)
 
@@ -85,6 +87,10 @@ def make_lists(rootpath, imgtype, split=1, fulltest=False):
     #ratios = np.ones_like(ratios) #TODO:uncomment this line and line 155, 156 to compute new ratios might be useful for JHMDB21
     video_list = []
     for vid, videoname in enumerate(sorted(database.keys())):
+
+        if vid%print_video_step == 0:
+            print('Have loaded {} videos.'.format(vid))
+
         video_list.append(videoname)
         actidx = database[videoname]['label']
         istrain = True

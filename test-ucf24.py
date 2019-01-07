@@ -203,6 +203,7 @@ def main():
         # Load dataset
         dataset = UCF24Detection(args.data_root, 'test', BaseTransform(args.ssd_dim, means), AnnotationTransform(),
                                  input_type=args.input_type, full_test=True)
+        
         # evaluation
         torch.cuda.synchronize()
         tt0 = time.perf_counter()
@@ -218,6 +219,7 @@ def main():
         torch.cuda.synchronize()
         print('Complete set time {:0.2f}'.format(time.perf_counter() - tt0))
         log_file.close()
+        
 
 if __name__ == '__main__':
     main()
