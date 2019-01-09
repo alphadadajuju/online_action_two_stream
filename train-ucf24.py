@@ -171,8 +171,10 @@ def train(args, net, optimizer, criterion, scheduler):
     if args.visdom:
 
         import visdom
-        viz = visdom.Visdom()
-        viz.port = args.vis_port
+
+        ### Modified: in order to use colab to visualize 
+        viz = visdom.Visdom(port='6006')
+        #viz.port = args.vis_port
         viz.env = args.exp_name
         # initialize visdom loss plot
         lot = viz.line(
