@@ -61,6 +61,10 @@ parser.add_argument('--conf_thresh', default=0.01, type=float, help='Confidence 
 parser.add_argument('--nms_thresh', default=0.45, type=float, help='NMS threshold')
 parser.add_argument('--topk', default=50, type=int, help='topk for evaluation')
 
+### Newly added arguments
+parser.add_argument('--eval_step', default=10000, type=int, help='validation and save checkpoints')
+parser.add_argument('--start_iter', default=0, type=int, help='Resume training at this iter')
+
 ## Parse arguments
 args = parser.parse_args()
 ## set random seeds
@@ -178,8 +182,8 @@ def train(args, net, optimizer, criterion, scheduler):
         viz.env = args.exp_name
         # initialize visdom loss plot
         lot = viz.line(
-            X=torch.zeros((1,)).cpu(),
-            Y=torch.zeros((1, 6)).cpu(),
+            X=torch.zeros((1,)).numpy(),
+            Y=torch.zeros((1, 6)).numpy(),
             opts=dict(
                 xlabel='Iteration',
                 ylabel='Loss',
@@ -192,8 +196,8 @@ def train(args, net, optimizer, criterion, scheduler):
         for cls in CLASSES:
             legends.append(cls)
         val_lot = viz.line(
-            X=torch.zeros((1,)).cpu(),
-            Y=torch.zeros((1,args.num_classes)).cpu(),
+            X=torch.zeros((1,)).numpy(),
+            Y=torch.zeros((1,args.num_classes)).numpy(),
             opts=dict(
                 xlabel='Iteration',
                 ylabel='Mean AP',
@@ -245,8 +249,8 @@ def train(args, net, optimizer, criterion, scheduler):
             if iteration % args.print_step == 0 and iteration>0:
                 if args.visdom:
                     losses_list = [loc_losses.val, cls_losses.val, losses.val, loc_losses.avg, cls_losses.avg, losses.avg]
-                    viz.line(X=torch.ones((1, 6)).cpu() * iteration,
-                        Y=torch.from_numpy(np.asarray(losses_list)).unsqueeze(0).cpu(),
+                    viz.line(X=torch.ones((1, 6)).numpy() * iteration,
+                        Y=torch.from_numpy(np.asarray(losses_list)).unsqueeze(0).numpy(),
                         win=lot,
                         update='append')
 
@@ -300,8 +304,8 @@ def train(args, net, optimizer, criterion, scheduler):
                     for ap in ap_all:
                         aps.append(ap)
                     viz.line(
-                        X=torch.ones((1, args.num_classes)).cpu() * iteration,
-                        Y=torch.from_numpy(np.asarray(aps)).unsqueeze(0).cpu(),
+                        X=torch.ones((1, args.num_classes)).numpy() * iteration,
+                        Y=torch.from_numpy(np.asarray(aps)).unsqueeze(0).numpy(),
                         win=val_lot,
                         update='append'
                             )

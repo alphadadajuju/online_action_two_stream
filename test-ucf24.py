@@ -121,9 +121,10 @@ def test_net(net, save_root, exp_name, input_type, dataset, iteration, num_class
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
 
-            #output_file_name = output_dir+'/{:05d}.mat'.format(int(frame_num))
-            #save_ids.append(output_file_name)
-            #sio.savemat(output_file_name, mdict={'scores':conf_scores.cpu().numpy(),'loc':decoded_boxes.cpu().numpy()})
+            ### Depend if you want to store detections mat files; comment accordingly
+            output_file_name = output_dir+'/{:05d}.mat'.format(int(frame_num))
+            save_ids.append(output_file_name)
+            sio.savemat(output_file_name, mdict={'scores':conf_scores.cpu().numpy(),'loc':decoded_boxes.cpu().numpy()})
 
             for cl_ind in range(1, num_classes):
                 scores = conf_scores[:, cl_ind].squeeze()
